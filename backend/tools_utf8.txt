@@ -1,0 +1,78 @@
+﻿Tool: create_or_update_file
+Description: Create or update a single file in a GitHub repository
+
+Tool: search_repositories
+Description: Search for GitHub repositories
+
+Tool: create_repository
+Description: Create a new GitHub repository in your account
+
+Tool: get_file_contents
+Description: Get the contents of a file or directory from a GitHub repository
+
+Tool: push_files
+Description: Push multiple files to a GitHub repository in a single commit
+
+Tool: create_issue
+Description: Create a new issue in a GitHub repository
+
+Tool: create_pull_request
+Description: Create a new pull request in a GitHub repository
+
+Tool: fork_repository
+Description: Fork a GitHub repository to your account or specified organization
+
+Tool: create_branch
+Description: Create a new branch in a GitHub repository
+
+Tool: list_commits
+Description: Get list of commits of a branch in a GitHub repository
+
+Tool: list_issues
+Description: List issues in a GitHub repository with filtering options
+
+Tool: update_issue
+Description: Update an existing issue in a GitHub repository
+
+Tool: add_issue_comment
+Description: Add a comment to an existing issue
+
+Tool: search_code
+Description: Search for code across GitHub repositories
+
+Tool: search_issues
+Description: Search for issues and pull requests across GitHub repositories
+
+Tool: search_users
+Description: Search for users on GitHub
+
+Tool: get_issue
+Description: Get details of a specific issue in a GitHub repository.
+
+Tool: get_pull_request
+Description: Get details of a specific pull request
+
+Tool: list_pull_requests
+Description: List and filter repository pull requests
+
+Tool: create_pull_request_review
+Description: Create a review on a pull request
+
+Tool: merge_pull_request
+Description: Merge a pull request
+
+Tool: get_pull_request_files
+Description: Get the list of files changed in a pull request
+
+Tool: get_pull_request_status
+Description: Get the combined status of all status checks for a pull request
+
+Tool: update_pull_request_branch
+Description: Update a pull request branch with the latest changes from the base branch
+
+Tool: get_pull_request_comments
+Description: Get the review comments on a pull request
+
+Tool: get_pull_request_reviews
+Description: Get the reviews on a pull request
+

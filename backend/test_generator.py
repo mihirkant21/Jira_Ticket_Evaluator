@@ -47,9 +47,9 @@ class TestGenerator:
         """
         
         try:
-            response_text = bedrock_client.invoke_claude(
+            response_text = bedrock_client.invoke_model(
                 prompt=prompt,
-                model_id=bedrock_client.SONNET_MODEL_ID,
+                model_id=bedrock_client.NOVA_PRO_MODEL_ID,
                 max_tokens=1000
             )
             

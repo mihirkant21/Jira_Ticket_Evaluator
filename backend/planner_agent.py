@@ -50,9 +50,9 @@ class PlannerAgent:
         
         try:
             # We use Haiku 4.5 for fast dynamic planning
-            response_text = bedrock_client.invoke_claude(
+            response_text = bedrock_client.invoke_model(
                 prompt=prompt,
-                model_id=bedrock_client.HAIKU_MODEL_ID,
+                model_id=bedrock_client.NOVA_PRO_MODEL_ID,
                 max_tokens=1000
             )
             

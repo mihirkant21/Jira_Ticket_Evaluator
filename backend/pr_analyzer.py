@@ -35,9 +35,9 @@ class PRAnalyzer:
         
         try:
             # We use Haiku 4.5 for rapid structural analysis of the PR metadata
-            response_text = bedrock_client.invoke_claude(
+            response_text = bedrock_client.invoke_model(
                 prompt=prompt,
-                model_id=bedrock_client.HAIKU_MODEL_ID,
+                model_id=bedrock_client.NOVA_LITE_MODEL_ID,
                 max_tokens=1500
             )
             

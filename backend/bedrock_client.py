@@ -3,7 +3,7 @@ import json
 import os
 from botocore.config import Config
 
-# Helper module for AWS Bedrock integration
+# Helper module for AWS Bedrock integration with Amazon Nova Models
 
 class BedrockClient:
     def __init__(self, region_name="us-east-1"):
@@ -17,40 +17,30 @@ class BedrockClient:
         )
         
         # Define the models we use based on the 10-stage architecture
-        self.HAIKU_MODEL_ID = "anthropic.claude-3-haiku-20240307-v1:0"
-        self.SONNET_MODEL_ID = "anthropic.claude-3-sonnet-20240229-v1:0"
+        self.NOVA_LITE_MODEL_ID = "us.amazon.nova-lite-v1:0"
+        self.NOVA_PRO_MODEL_ID = "us.amazon.nova-pro-v1:0"
         self.TITAN_EMBEDDING_MODEL_ID = "amazon.titan-embed-text-v2:0"
 
-    def invoke_claude(self, prompt: str, model_id: str, max_tokens: int = 1000):
-        """Generic method to invoke Anthropic Claude models via Bedrock"""
-        
-        body = json.dumps({
-            "anthropic_version": "bedrock-2023-05-31",
-            "max_tokens": max_tokens,
-            "messages": [
-                {
-                    "role": "user",
-                    "content": [{"type": "text", "text": prompt}]
-                }
-            ]
-        })
-
+    def invoke_model(self, prompt: str, model_id: str, max_tokens: int = 1000):
+        """Generic method to invoke Amazon Nova models via Bedrock Converse API"""
         try:
-            response = self.client.invoke_model(
-                body=body,
+            response = self.client.converse(
                 modelId=model_id,
-                accept="application/json",
-                contentType="application/json"
+                messages=[
+                    {
+                        "role": "user",
+                        "content": [{"text": prompt}]
+                    }
+                ],
+                inferenceConfig={"maxTokens": max_tokens}
             )
-            response_body = json.loads(response.get("body").read())
-            return response_body["content"][0]["text"]
+            return response["output"]["message"]["content"][0]["text"]
         except Exception as e:
-            print(f"Error invoking Bedrock Claude: {e}")
+            print(f"Error invoking Bedrock Nova model: {e}")
             return None
 
     def generate_embeddings(self, text: str):
         """Generate text embeddings using Amazon Titan"""
-        
         # Basic input for Titan Text Embeddings
         body = json.dumps({"inputText": text})
         

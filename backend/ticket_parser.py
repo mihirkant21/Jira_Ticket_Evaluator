@@ -44,9 +44,9 @@ class TicketParser:
         
         try:
             # We use Haiku 4.5 for fast, cheap abstraction of the ticket structure
-            response_text = bedrock_client.invoke_claude(
+            response_text = bedrock_client.invoke_model(
                 prompt=prompt,
-                model_id=bedrock_client.HAIKU_MODEL_ID,
+                model_id=bedrock_client.NOVA_LITE_MODEL_ID,
                 max_tokens=1500
             )
             

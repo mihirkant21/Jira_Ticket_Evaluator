@@ -4,6 +4,11 @@ from pydantic import BaseModel
 import uvicorn
 import os
 import asyncio
+from typing import Dict, Any
+from dotenv import load_dotenv
+
+# Load environment variables from .env file before anything else
+load_dotenv()
 
 from jira_mcp_client import jira_mcp
 from github_mcp_client import github_mcp
@@ -15,8 +20,12 @@ from semantic_search import semantic_search
 from evidence_finder import evidence_finder
 from test_generator import test_generator
 from verdict_agent import verdict_agent
+from dynamodb_client import dynamodb_client
 
 app = FastAPI(title="Jira Ticket Evaluator API")
+
+# Initialize DynamoDB Table on startup
+dynamodb_client.create_table_if_not_exists()
 
 # Configure CORS
 app.add_middleware(
@@ -60,7 +69,7 @@ async def start_evaluation(request: EvaluationRequest):
         plan = planner_agent.plan_execution(jira_data["raw_data"])
         execution_plan = plan.get("execution_plan", [])
         
-        results_context = {}
+        results_context: Dict[str, Any] = {}
 
         # Stage 3: Parse Jira Ticket with classification and search hints
         if "parse_ticket_requirements" in execution_plan:
@@ -142,6 +151,12 @@ async def start_evaluation(request: EvaluationRequest):
             )
             # Add planner reasoning for display
             final_verdict["planner_decisions"] = plan.get("planner_reasoning", "")
+            
+            # Stage 10: Persist to DynamoDB 
+            eval_id = dynamodb_client.save_evaluation(request.jira_id, request.github_pr_url, final_verdict)
+            if eval_id:
+                final_verdict["evaluation_id"] = eval_id
+                
             return final_verdict
         
         return {"status": "success", "message": "Pipeline complete", "data": results_context}
