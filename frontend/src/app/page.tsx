@@ -20,12 +20,11 @@ export default function Home() {
     setResult(null);
     
     try {
-      const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
-      const response = await fetch(`${API_BASE_URL}/api/evaluate`, {
+      // Call our Next.js API route to proxy the request and avoid browser CORS preflight
+      const response = await fetch(`/api/evaluate`, {
         method: 'POST',
         headers: { 
-          'Content-Type': 'application/json',
-          'bypass-tunnel-reminder': 'true'
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({ jira_id: jiraId, github_pr_url: prUrl })
       });
