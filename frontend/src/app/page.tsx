@@ -20,7 +20,8 @@ export default function Home() {
     setResult(null);
     
     try {
-      const response = await fetch('http://localhost:8000/api/evaluate', {
+      const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+      const response = await fetch(`${API_BASE_URL}/api/evaluate`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ jira_id: jiraId, github_pr_url: prUrl })
