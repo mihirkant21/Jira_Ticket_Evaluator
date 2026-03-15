@@ -19,7 +19,17 @@ export async function POST(request: Request) {
       cache: 'no-store'
     });
 
-    const data = await response.json();
+    const text = await response.text();
+    let data;
+    try {
+      data = JSON.parse(text);
+    } catch (e) {
+      console.error('Failed to parse backend response as JSON:', text.substring(0, 500));
+      return NextResponse.json(
+        { detail: `Backend returned non-JSON response: ${text.substring(0, 100)}...` },
+        { status: response.status || 502 }
+      );
+    }
 
     if (!response.ok) {
       return NextResponse.json(
