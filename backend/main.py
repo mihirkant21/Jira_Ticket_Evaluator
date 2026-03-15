@@ -30,7 +30,7 @@ dynamodb_client.create_table_if_not_exists()
 # Configure CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],  # Next.js local server
+    allow_origins=["http://localhost:3000", "https://jira-ticket-evaluator.vercel.app"],  # Next.js local server & Vercel deployment
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

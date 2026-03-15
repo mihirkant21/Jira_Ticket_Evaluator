@@ -111,6 +111,7 @@ class EvidenceFinder:
         feedback = ""
         
         while attempts < max_attempts:
+            feedback_section = f"--- FEEDBACK FROM PREVIOUS ATTEMPT ---\n{feedback}" if feedback else ""
             prompt = f"""
             {self.system_prompt}
             
@@ -125,7 +126,7 @@ class EvidenceFinder:
             --- Overall PR Functional Map ---
             {json.dumps(functional_map, indent=2)}
             
-            {f"--- FEEDBACK FROM PREVIOUS ATTEMPT ---\\n{feedback}" if feedback else ""}
+            {feedback_section}
             
             Analyze deeply and output Strict JSON:
             """

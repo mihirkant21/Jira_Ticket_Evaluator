@@ -2,5 +2,6 @@
     "python.defaultInterpreterPath": "${workspaceFolder}/.venv/Scripts/python.exe",
     "python.analysis.extraPaths": [
         "${workspaceFolder}/backend"
-    ]
+    ],
+    "docker.dockerPath": "C:\\Program Files\\Docker\\Docker\\resources\\bin\\docker.exe"
 }
