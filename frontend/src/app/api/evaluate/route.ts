@@ -12,12 +12,15 @@ export async function POST(request: Request) {
     console.log(`[${requestId}] API Route: Request body:`, JSON.stringify(body));
     
     // We use process.env.NEXT_PUBLIC_API_URL or a dedicated server env variable for the backend
-    const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+    let API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+
+    // Auto-fix missing protocol (common Vercel env var misconfiguration)
+    if (API_BASE_URL && !API_BASE_URL.startsWith('http')) {
+      console.warn(`[${requestId}] API Route: API_BASE_URL missing protocol, prepending https://`);
+      API_BASE_URL = `https://${API_BASE_URL}`;
+    }
     console.log(`[${requestId}] API Route: Using API_BASE_URL: ${API_BASE_URL}`);
 
-    if (!API_BASE_URL.startsWith('http')) {
-      console.error(`[${requestId}] API Route: Invalid API_BASE_URL!`);
-    }
     
     console.log(`[${requestId}] API Route: Fetching from ${API_BASE_URL}/api/evaluate...`);
 
