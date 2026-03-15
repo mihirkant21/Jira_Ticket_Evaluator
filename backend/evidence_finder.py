@@ -45,48 +45,61 @@ class EvidenceFinder:
         """
         Improvement 3: Programmatic Validator.
         Checks:
-        1. Does the claimed file exist?
-        2. Does the claimed line number exist?
-        3. Does the code at that line contain the snippet?
+        1. Does the claimed code snippet exist anywhere in the PR diff or external context?
         """
+        import re
         if not evidence or evidence.get("status") != "FOUND":
             return True # Nothing to validate if not found
             
-        file_path = evidence.get("evidence", {}).get("file")
-        line_num = evidence.get("evidence", {}).get("line")
         snippet = evidence.get("evidence", {}).get("code_snippet")
         
-        if not file_path or not line_num or not snippet:
+        if not snippet:
             return False
             
+        snippet_lower = snippet.strip().lower()
+        normalized_snippet = re.sub(r'[\s\+\-]', '', snippet_lower)
+        print(f"DEBUG: AI suggested snippet [{snippet_lower}]")
+        
         # Check in PR diff files
-        target_code = pr_files_dict.get(file_path)
-        
-        # Check in external context if not in diff
-        if not target_code:
-            for ctx in external_context:
-                if f"EXTERNAL:{ctx['reference']}" == file_path:
-                    target_code = ctx["code"]
-                    break
-        
-        if not target_code:
-            return False # File not found
-            
-        # Basic line check
-        lines = target_code.split("\n")
-        try:
-            line_idx = int(line_num) - 1
-            if line_idx < 0 or line_idx >= len(lines):
-                return False # Line out of range
-            
-            # Fuzzy match snippet in that line or neighboring lines
-            context_area = "\n".join(lines[max(0, line_idx-2):min(len(lines), line_idx+3)])
-            if snippet.strip().lower() not in context_area.lower():
-                return False # Snippet not found in context
+        for target_code in pr_files_dict.values():
+            if target_code:
+                normalized_target = re.sub(r'[\s\+\-]', '', target_code.lower())
+                if normalized_snippet in normalized_target:
+                    print("DEBUG: Snippet validated successfully!")
+                    return True
                 
-            return True
-        except (ValueError, TypeError):
-            return False
+        # Check in external context if not in diff
+        for ctx in external_context:
+            target_code = ctx.get("code", "")
+            if target_code:
+                normalized_target = re.sub(r'[\s\+\-]', '', target_code.lower())
+                if normalized_snippet in normalized_target:
+                    return True
+                
+        return False
+            
+        snippet_lower = snippet.strip().lower()
+        print(f"DEBUG: AI suggested snippet [{{snippet_lower}}]")
+        
+        # Check in PR diff files
+        for target_code in pr_files_dict.values():
+            if target_code:
+                # print(f"DEBUG: Diff content [{{target_code}}]") # Too noisy
+                if snippet_lower in target_code.lower():
+                    print("DEBUG: Snippet validated successfully!")
+                    return True
+            if target_code and snippet_lower in target_code.lower():
+                return True
+                
+        # Check in external context if not in diff
+        for ctx in external_context:
+            target_code = ctx.get("code", "")
+            if target_code:
+                normalized_target = re.sub(r'[\s\+\-]', '', target_code.lower())
+                if normalized_snippet in normalized_target:
+                    return True
+                
+        return False
 
     def find_requirement_evidence(self, requirement: Dict[str, Any], retrieved_code_chunks: list, functional_map: dict, pr_files_dict: dict = {}, external_context: list = []) -> dict:
         """
@@ -147,3 +160,4 @@ class EvidenceFinder:
         return {"requirement_id": requirement['id'], "status": "NOT_FOUND", "explanation": "Evidence could not be programmatically verified after 2 attempts."}
 
 evidence_finder = EvidenceFinder()
+

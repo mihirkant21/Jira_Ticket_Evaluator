@@ -56,7 +56,7 @@ class GithubMCPClient:
                     import httpx
                     diff_text = ""
                     try:
-                        async with httpx.AsyncClient() as client:
+                        async with httpx.AsyncClient(follow_redirects=True) as client:
                             resp = await client.get(f"{pr_url.rstrip('/')}.diff")
                             if resp.status_code == 200:
                                 diff_text = resp.text

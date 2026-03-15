@@ -241,7 +241,11 @@ export default function Home() {
                       <h4 className="text-xs font-semibold text-slate-400 uppercase mb-2 flex items-center gap-2">
                         <FileCode2 className="w-3 h-3" /> Code Evidence
                       </h4>
-                      <p className="text-sm text-slate-300">{req.evidence || "No significant evidence found."}</p>
+                      <p className="text-sm text-slate-300 whitespace-pre-wrap font-mono">
+                        {req.evidence 
+                          ? (typeof req.evidence === 'object' ? JSON.stringify(req.evidence, null, 2) : String(req.evidence))
+                          : "No significant evidence found."}
+                      </p>
                       {req.confidence && (
                         <div className="mt-3 text-xs text-slate-500">
                           AI Confidence: {(req.confidence * 100).toFixed(0)}%
